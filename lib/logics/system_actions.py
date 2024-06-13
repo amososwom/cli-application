@@ -40,7 +40,7 @@ class SystemAction(DbHandler):
 
         if(current > 556.3):
             giveaway = current * 0.01
-            recivable = inf[0]['token_price'] * 0.02 + inf[0]['token_price']
+            recivable = inf[0]['token_price'] * 0.05 + inf[0]['token_price']
 
             DbHandler().update_records('balances',{'b_token': giveaway},balancesdata)
 
@@ -50,7 +50,7 @@ class SystemAction(DbHandler):
             }
 
             DbHandler().update_records('decentralized',tokensub,tokeinid)
-            info.print_success(f"Hi {uname} you've Received Extra {giveaway:.4f}token worth ${recivable:.2f}")
+            info.print_info(f"Hi {uname} you've Received Extra {giveaway:.4f}token worth ${recivable:.2f}")
         else:
             info.print_error(f"Sorry {uname} No token available for now")
 
@@ -72,7 +72,7 @@ class SystemAction(DbHandler):
         response = DbHandler().delete_records('users',where)
         
         if response[0]['status']:
-            info.print_success(F"Account deleted successfully for {uid}")
+            info.print_info(F"Account deleted successfully for {uid}")
         else:
             info.print_error(F"Error: {response.error}")
     

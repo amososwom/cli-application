@@ -1,6 +1,51 @@
 from lib.backend.connection import DbHandler
 from utils import * 
 
+menudata = [
+        {
+            "arrow": ">",
+            "command": "create",
+            "description": "Create Account",
+            "func": "Accepts Inputs"
+        },
+        {
+            "arrow": ">",
+            "command": "login",
+            "description": "Login To dashboard",
+            "func": "Accepts Inputs"
+        },   
+        {
+            "arrow": ">",
+            "command": "view_users",
+            "description": "View Account",
+            "func": "systemaction.see_users"
+        },   
+        {
+            "arrow": ">",
+            "command": "view_acc",
+            "description": "Deposit Funds",
+            "func": "useraction().see_personal"
+        },   
+        {
+            "arrow": ">",
+            "command": "delete_acc",
+            "description": "Withdraw Funds",
+            "func": "Accepts Withdrawal Inputs"
+        },   
+        {
+            "arrow": ">",
+            "command": "logout",
+            "description": "Exit Application",
+            "func": "useraction().confirm_logout"
+        },  
+        {
+            "arrow": ">",
+            "command": "exit",
+            "description": "Exit Application",
+            "func": "func"
+        }    
+    ]
+        
 
 class UserActions(DbHandler):
     def __init__(self):
@@ -23,60 +68,18 @@ class UserActions(DbHandler):
             self.uname = response[0]['uname']
             info.print_success(f"Successfully logged in as {self.uname}")
         else:
-            info.print_error("Opps your Credentials are Wrong")
+            info.print_info("Opps your Credentials are Wrong")
     
     def user_menu():
-        data = [
-            {
-                 "arrow": ">",
-                "command": "create",
-                "description": "Create Account",
-                "func": "Accepts Inputs"
-            },
-            {
-                "arrow": ">",
-                "command": "login",
-                "description": "Login To dashboard",
-                "func": "Accepts Inputs"
-            },   
-            {
-                "arrow": ">",
-                "command": "view_users",
-                "description": "View Account",
-                "func": "systemaction.see_users()"
-            },   
-            {
-                "arrow": ">",
-                "command": "view_acc",
-                "description": "Deposit Funds",
-                "func": "useraction().see_personal()"
-            },   
-            {
-                "arrow": ">",
-                "command": "delete_acc",
-                "description": "Withdraw Funds",
-                "func": "Accepts Withdrawal Inputs"
-            },   
-            {
-                "arrow": ">",
-                "command": "logout",
-                "description": "Exit Application",
-                "func": "useraction().confirm_logout()"
-            },  
-            {
-                "arrow": ">",
-                "command": "exit",
-                "description": "Exit Application",
-                "func": "func"
-            }    
-        ]
-        display.generate_table(data)
+        info.print_info(" \n**Navigate By Commands*")
+
+        return display.generate_table(menudata)
 
     # logout
     def confirm_logout(self):
         self.uid = None
         self.uname = None
-        info.print_success("Successfully logged out")
+        info.print_info("Successfully logged out")
 
     # see available tokens
     def sys_tokens():
@@ -95,7 +98,7 @@ class UserActions(DbHandler):
                 token_qty = info.dollar(val['token_qty'], 4)
                 token_price = info.dollar(val['token_price'], 2)
                 
-                print(f"**inflation-Rate @ {info.print_r_success('$ ' + token_price)} **\n")
+                info.print_info(f"**inflation-Rate @ {info.print_r_success('$ ' + token_price)} {info.print_r_info('**')} \n")
                 
                 print(f">Token-Name: {info.print_r_success(token_name)}")
                 print(f">Token-Qty: {info.print_r_success(token_qty)}")
