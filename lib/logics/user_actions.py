@@ -1,4 +1,5 @@
 from lib.backend.connection import DbHandler
+from utils import * 
 
 
 class UserActions(DbHandler):
@@ -6,6 +7,7 @@ class UserActions(DbHandler):
         super().__init__()
         self.uid = None
         self.uname = None
+
 
     def confirm_login(self, name, password):
         data = {
@@ -17,40 +19,127 @@ class UserActions(DbHandler):
 
         if len(response) > 0 :
 
-            # self.uid = response[1][0]
-            # self.uname = response[1][1]
-            # print(
-            #     self.uid,
-            #     self.uname
-            # )
-            print(f"Yeah your data was found and logged in {response}")
+            self.uid = response[0]['uid']
+            self.uname = response[0]['uname']
+            info.print_success(f"Successfully logged in as {self.uname}")
         else:
-            print("Opps your Credentials are Wrong")
+            info.print_error("Opps your Credentials are Wrong")
+    
+    def user_menu():
+        data = [
+            {
+                 "arrow": ">",
+                "command": "create",
+                "description": "Create Account",
+                "func": "Accepts Inputs"
+            },
+            {
+                "arrow": ">",
+                "command": "login",
+                "description": "Login To dashboard",
+                "func": "Accepts Inputs"
+            },   
+            {
+                "arrow": ">",
+                "command": "view_users",
+                "description": "View Account",
+                "func": "systemaction.see_users()"
+            },   
+            {
+                "arrow": ">",
+                "command": "view_acc",
+                "description": "Deposit Funds",
+                "func": "useraction().see_personal()"
+            },   
+            {
+                "arrow": ">",
+                "command": "delete_acc",
+                "description": "Withdraw Funds",
+                "func": "Accepts Withdrawal Inputs"
+            },   
+            {
+                "arrow": ">",
+                "command": "logout",
+                "description": "Exit Application",
+                "func": "useraction().confirm_logout()"
+            },  
+            {
+                "arrow": ">",
+                "command": "exit",
+                "description": "Exit Application",
+                "func": "func"
+            }    
+        ]
+        display.generate_table(data)
+
+    # logout
+    def confirm_logout(self):
+        self.uid = None
+        self.uname = None
+        info.print_success("Successfully logged out")
+
+    # see available tokens
+    def sys_tokens():
+        response = DbHandler().select_records('decentralized')
+
+        return response if response else []
+    
+    @classmethod
+    def display_token(cls):
+        response = cls.sys_tokens()
+
+        if len(response) > 0:
+            for val in response:
+
+                token_name = f"{val['token_name']} - {val['token_sys']}"
+                token_qty = info.dollar(val['token_qty'], 4)
+                token_price = info.dollar(val['token_price'], 2)
+                
+                print(f"**inflation-Rate @ {info.print_r_success('$ ' + token_price)} **\n")
+                
+                print(f">Token-Name: {info.print_r_success(token_name)}")
+                print(f">Token-Qty: {info.print_r_success(token_qty)}")
+                print(f">Token-@Price: {info.print_r_success('$ ' + token_price)}")
+        else:
+            print("No tokens available")
+
+    # sell token
+    def sell_token(self,token_qty,token_price):
+        pass
+
+    def see_personal(self):
+        if self.uid:
+            print("**Your Details**")
+            response = DbHandler().select_records('users',{"uid": self.uid})
+            display.generate_table(response)
+            print("**Your Balances**")
+            response = DbHandler().select_records('balances',{"b_uid": self.uid})
+            display.generate_table(response)
+        else:
+            return info.print_error("Opps you have to be logged in to ACCESS your details")
 
 
-# see available tokens
+        
+    #buy tokens
+
+    #see market token
+
+    # see balances
+
+    #see his transactions
 
 
-#see market token
-
-# see balances
-
-#see his transactions
+    # send token
 
 
-# send token
 
 
-#buy tokens
 
 
-# sell token
+    # cancel trade
 
 
-# cancel trade
+    #view personal history
 
 
-#view personal history
-
-
-#delete account
+    #delete account

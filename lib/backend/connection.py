@@ -8,6 +8,19 @@ class DbHandler:
 
 
     def setup(self):
+        self._cursor.execute('''CREATE TABLE IF NOT EXISTS decentralized (
+                                token_id INTEGER PRIMARY KEY,
+                                token_name TEXT,
+                                token_sys TEXT,
+                                token_qty INTEGER,
+                                token_price INTEGER 
+                            );''')
+        
+        self._cursor.execute('''INSERT OR IGNORE INTO decentralized (token_id, token_name, 
+                                token_sys, token_qty, token_price) VALUES('7902',
+                                'SHIBAINU','SHI',56200,320
+                             );''')
+        
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                                 uid TEXT PRIMARY KEY,
                                 uname TEXT COLLATE NOCASE,
@@ -26,8 +39,8 @@ class DbHandler:
 
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS balances (
                                 b_uid TEXT PRIMARY KEY,
-                                b_amount TEXT DEFAULT '0',
-                                b_token TEXT DEFAULT '0',
+                                b_amount INTEGER DEFAULT 0,
+                                b_token INTEGER DEFAULT 0,
                                 FOREIGN KEY (b_uid) REFERENCES users(uid) ON DELETE CASCADE
                             );''')
         
@@ -73,7 +86,14 @@ class DbHandler:
             self._cursor.execute(query, conctinatedvalue)
             data = self._cursor.fetchall()
 
-            return data if data else []
+            columns = [description[0] for description in self._cursor.description]
+
+            result = []
+            for row in data:
+                row_dict = dict(zip(columns, row))
+                result.append(row_dict)
+
+            return result if result else []
         
         except sqlite3.Error as e:
             print(f"Error: {str(e)}")
@@ -125,3 +145,9 @@ class DbHandler:
         self._cursor.close()
         self._conn.close()
 
+# tokensub =  {
+#         'token_qty': 5,
+#         'token_price': 0.02
+#     }
+# tokeinid = {'token_id': 7902}
+# DbHandler().update_records('decentralized',tokensub, tokeinid)

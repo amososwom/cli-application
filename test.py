@@ -1,6 +1,5 @@
-import uuid
+def yellow_text(message):
+    return f"\033[0;33m{message}\033[0m"
 
-# Generate a UUID and convert it to string
-unique_id = uuid.uuid4() #.hex
-print(str(unique_id)[0:7])
-print(unique_id.hex[0:7])
+# Example usage
+print(yellow_text("This is a yellow message"))
