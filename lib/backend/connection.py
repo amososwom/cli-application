@@ -9,31 +9,31 @@ class DbHandler:
 
     def create_tables(self):
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                                uid INTEGER PRIMARY KEY,
+                                uid TEXT PRIMARY KEY,
                                 uname TEXT,
                                 password TEXT
                             );''')
 
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS transactions (
-                                trans_id INTEGER PRIMARY KEY,
-                                trans_uid INTEGER,
+                                trans_id TEXT PRIMARY KEY,
+                                trans_uid TEXT,
                                 trans_type TEXT,
                                 trans_token TEXT,
                                 trans_date TEXT DEFAULT CURRENT_DATE,
-                                trans_state TEXT DEFAULT '000000',
+                                trans_state TEXT DEFAULT '0',
                                 FOREIGN KEY (trans_uid) REFERENCES users(uid) ON DELETE CASCADE
                             );''')
 
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS balances (
-                                b_uid INTEGER PRIMARY KEY,
-                                b_amount INTEGER,
-                                b_token TEXT,
+                                b_uid TEXT PRIMARY KEY,
+                                b_amount TEXT DEFAULT '0',
+                                b_token TEXT DEFAULT '0',
                                 FOREIGN KEY (b_uid) REFERENCES users(uid) ON DELETE CASCADE
                             );''')
         
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS markets (
-                                m_id INTEGER PRIMARY KEY,
-                                m_uid INTEGER,
+                                m_id TEXT PRIMARY KEY,
+                                m_uid TEXT,
                                 m_token TEXT,
                                 m_type TEXT,
                                 m_date TEXT,
@@ -47,6 +47,7 @@ class DbHandler:
         placeholder = ','.join(['?'] * len(data))
         columns = ','.join(data.keys())
         values = tuple(data.values())
+        print(values)
         query = f"INSERT INTO {table} ({columns}) VALUES ({placeholder})"
         
         try:
@@ -61,14 +62,22 @@ class DbHandler:
         
     def select_records(self, tables, where = None):
 
-        query = f"SELECT * FROM {tables} WHERE {where}"
 
         if not where:
             query = f"SELECT * FROM {tables}"
+        else:
+            conctinatedkey = ' AND '.join([f"{value} = ? " for value in where.keys()])
+
+            query = f"SELECT * FROM {tables} WHERE {conctinatedkey}"
+
+            conctinatedvalue = tuple(where.values())
+            print(query)
+            print(conctinatedvalue)
 
         try: 
-            self._cursor.execute(query)
+            self._cursor.execute(query, conctinatedvalue)
             data = self._cursor.fetchall()
+            print(data)
 
             return data if data else []
         
