@@ -8,15 +8,15 @@ useraction  = user_actions.UserActions
 
 
 def Main():
-    info.print_info("*** Welcome to Token Trader ***}")
+    print(info.print_r_info("*** Welcome to Token Trader ***"))
     print("------------------------------ \n")
     useraction.display_token()
     useraction.user_menu()
 
-    systemaction.create_user("Mary", "mary12345")
-    users = useraction()
-    users.confirm_login("Mary", "mary12345")
-    users.see_personal()
+    # systemaction.create_user("Mary", "mary12345")
+    # users = useraction()
+    # users.confirm_login("Mary", "mary12345")
+    # users.see_personal()
 
 
     # while True:

@@ -5,7 +5,7 @@ def print_error(message):
     print(f"\033[0;31m{message}\033[0m \n")
 
 def print_info(message):
-    print(f"\033[0;33m{message}\033[0m")
+    print(f"\033[0;33m{message}\033[0m \n")
 
 
 

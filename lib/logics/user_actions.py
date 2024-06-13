@@ -3,43 +3,67 @@ from utils import *
 
 menudata = [
         {
-            "arrow": ">",
+            "arrow": ">**",
             "command": "create",
             "description": "Create Account",
             "func": "Accepts Inputs"
         },
         {
-            "arrow": ">",
+            "arrow": ">**",
             "command": "login",
-            "description": "Login To dashboard",
+            "description": "Login To Account",
             "func": "Accepts Inputs"
         },   
         {
-            "arrow": ">",
-            "command": "view_users",
-            "description": "View Account",
+            "arrow": ">**",
+            "command": "view_market",
+            "description": "View Market Analysis",
+            "func": "Accepts Inputs"
+        },   
+        {
+            "arrow": ">**",
+            "command": "view_all_users",
+            "description": "See full users",
             "func": "systemaction.see_users"
         },   
         {
-            "arrow": ">",
+            "arrow": ">**",
             "command": "view_acc",
-            "description": "Deposit Funds",
+            "description": "Your Account Details",
             "func": "useraction().see_personal"
         },   
         {
-            "arrow": ">",
+            "arrow": ">**",
+            "command": "buy_token",
+            "description": "Buy Tokens Form Market",
+            "func": "useraction().see_personal"
+        },   
+        {
+            "arrow": ">**",
+            "command": "sell_token",
+            "description": "Realse Tokens to Market",
+            "func": "useraction().see_personal"
+        },   
+        {
+            "arrow": ">**",
+            "command": "send_token",
+            "description": "Send your Tokens to A user",
+            "func": "useraction().see_personal"
+        },   
+        {
+            "arrow": ">**",
             "command": "delete_acc",
             "description": "Withdraw Funds",
             "func": "Accepts Withdrawal Inputs"
         },   
         {
-            "arrow": ">",
+            "arrow": ">**",
             "command": "logout",
-            "description": "Exit Application",
+            "description": "Logout From CLI-Application",
             "func": "useraction().confirm_logout"
         },  
         {
-            "arrow": ">",
+            "arrow": ">**",
             "command": "exit",
             "description": "Exit Application",
             "func": "func"
@@ -71,7 +95,7 @@ class UserActions(DbHandler):
             info.print_info("Opps your Credentials are Wrong")
     
     def user_menu():
-        info.print_info(" \n**Navigate By Commands*")
+        info.print_info(" \n**Navigate By Commands**")
 
         return display.generate_table(menudata)
 
@@ -102,7 +126,7 @@ class UserActions(DbHandler):
                 
                 print(f">Token-Name: {info.print_r_success(token_name)}")
                 print(f">Token-Qty: {info.print_r_success(token_qty)}")
-                print(f">Token-@Price: {info.print_r_success('$ ' + token_price)}")
+                print(f">Token @Price: {info.print_r_success('$ ' + token_price)}")
         else:
             print("No tokens available")
 
