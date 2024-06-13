@@ -10,18 +10,22 @@ class SystemAction(DbHandler):
         if not uname or not password:
             print("fields cant be empty")
             return
+        confirmusers = DbHandler().select_records('users',{"uname": uname})[0]['staus']
+        if confirmusers:
+            retrun 
         
         randuid = uuid.uuid4().hex
         
         data = {
             "uid": randuid[0:8],
-            "uname": '-'.join(uname.capitalize().split(' ')),
+            "uname": '-'.join(uname.strip().capitalize().split(' ')),
             "password":  password
         }
         balancesdata = {
             "b_uid": randuid[0:8]
         }
-        response = DbHandler().insert_records('users',data)
+
+        DbHandler().insert_records('users',data)
         response = DbHandler().insert_records('balances',balancesdata)
 
         if response[0]['status']:

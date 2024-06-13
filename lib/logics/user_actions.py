@@ -17,13 +17,13 @@ class UserActions(DbHandler):
 
         if len(response) > 0 :
 
-            self.uid = response[1][0]
-            self.uname = response[1][1]
-            print(
-                self.uid,
-                self.uname
-            )
-            print("Yeah your data was found and logged in")
+            # self.uid = response[1][0]
+            # self.uname = response[1][1]
+            # print(
+            #     self.uid,
+            #     self.uname
+            # )
+            print(f"Yeah your data was found and logged in {response}")
         else:
             print("Opps your Credentials are Wrong")
 

@@ -4,13 +4,13 @@ class DbHandler:
     def __init__(self):
         self._conn = sqlite3.connect("./lib/backend/token-trader.db")
         self._cursor = self._conn.cursor()
-        self.create_tables()
+        self.setup()
 
 
-    def create_tables(self):
+    def setup(self):
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                                 uid TEXT PRIMARY KEY,
-                                uname TEXT,
+                                uname TEXT COLLATE NOCASE,
                                 password TEXT
                             );''')
 
@@ -47,7 +47,6 @@ class DbHandler:
         placeholder = ','.join(['?'] * len(data))
         columns = ','.join(data.keys())
         values = tuple(data.values())
-        print(values)
         query = f"INSERT INTO {table} ({columns}) VALUES ({placeholder})"
         
         try:
@@ -60,29 +59,23 @@ class DbHandler:
             print(f"Error: {str(e)}")
             return [{"status": False}, {"error": str(e)}]
         
-    def select_records(self, tables, where = None):
-
-
+    def select_records(self, table, where=None):
         if not where:
-            query = f"SELECT * FROM {tables}"
+            query = f"SELECT * FROM {table}"
+            conctinatedvalue = ()
         else:
-            conctinatedkey = ' AND '.join([f"{value} = ? " for value in where.keys()])
-
-            query = f"SELECT * FROM {tables} WHERE {conctinatedkey}"
-
+            conctinatedkey = ' AND '.join([f"{key} = ?" for key in where.keys()])
+            query = f"SELECT * FROM {table} WHERE {conctinatedkey}"
             conctinatedvalue = tuple(where.values())
-            print(query)
-            print(conctinatedvalue)
 
-        try: 
+        
+        try:
             self._cursor.execute(query, conctinatedvalue)
             data = self._cursor.fetchall()
-            print(data)
 
             return data if data else []
         
         except sqlite3.Error as e:
-    
             print(f"Error: {str(e)}")
             return []
     
@@ -131,5 +124,4 @@ class DbHandler:
     def close_connection(self):
         self._cursor.close()
         self._conn.close()
-
 
