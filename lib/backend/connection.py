@@ -1,5 +1,8 @@
 import sqlite3
 
+from utils import * 
+
+
 class DbHandler:
     def __init__(self):
         self._conn = sqlite3.connect("./lib/backend/token-trader.db")
@@ -34,7 +37,7 @@ class DbHandler:
                                 trans_token TEXT,
                                 trans_date TEXT DEFAULT CURRENT_DATE,
                                 trans_state TEXT DEFAULT '0',
-                                FOREIGN KEY (trans_uid) REFERENCES users(uid) ON DELETE CASCADE
+                                FOREIGN KEY (trans_uid) REFERENCES users(uid) 
                             );''')
 
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS balances (
@@ -144,10 +147,5 @@ class DbHandler:
     def close_connection(self):
         self._cursor.close()
         self._conn.close()
-
-# tokensub =  {
-#         'token_qty': 5,
-#         'token_price': 0.02
-#     }
-# tokeinid = {'token_id': 7902}
-# DbHandler().update_records('decentralized',tokensub, tokeinid)
+        info.print_info("Connection Closed Successfully")
+        

@@ -70,7 +70,7 @@ class SystemAction(DbHandler):
             pass
 
         else:
-            info.print_success("Opps Seems you'll be our first User If you Create an Account")
+            info.print_info("Opps Seems you'll be our first User If you Create an Account")
 
     def see_market(self):
         markets = self.oneconn.select_records('markets')
@@ -80,7 +80,7 @@ class SystemAction(DbHandler):
             pass
 
         else:
-            info.print_success("Opps Seems you'll be our first User If you Create an Account")
+            info.print_info("Opps Seems you'll be our first User If you decide to trade in Token Trader")
 
     def see_trans(self):
         transactions = self.oneconn.select_records('transactions')
@@ -90,7 +90,7 @@ class SystemAction(DbHandler):
             pass
 
         else:
-            info.print_success("Opps Seems you'll be our first User If you Create an Account")
+            info.print_info("Opps Seems you'll be our first User If you Trade/Transfer On Token-Trader")
 
 
 

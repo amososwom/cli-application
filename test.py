@@ -3,3 +3,9 @@ def yellow_text(message):
 
 # Example usage
 print(yellow_text("This is a yellow message"))
+
+
+import uuid
+
+
+print(uuid.uuid4())

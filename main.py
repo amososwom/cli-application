@@ -2,7 +2,6 @@ from  lib.logics  import *
 from utils import * 
 
 
-
 systemaction  = system_actions.SystemAction()
 useraction  = user_actions.UserActions
 users = useraction()
@@ -20,7 +19,7 @@ menudata = [
     {"arrow": ">**", "command": "send_token", "description": "Send your Tokens to A user", "func": "send_tokens"},
     {"arrow": ">**", "command": "delete_acc", "description": "Delete Your Account", "func": 'kill'},
     {"arrow": ">**", "command": "logout", "description": "Logout From CLI-Application", "func": 'confirm_logout'},
-    {"arrow": ">**", "command": "exit", "description": "Exit Application", "func": "None"}
+    {"arrow": ">**", "command": "exit", "description": "Exit Application", "func": "Terminate"}
 ]
 
 def Main():
@@ -36,6 +35,8 @@ def Main():
         if invalue == 'menu':
             useraction.user_menu(menudata)
         elif invalue == 'exit':
+                users.confirm_logout()
+                systemaction.close_connection()
                 info.print_error("Exiting the cli-app...")
                 break
         else:

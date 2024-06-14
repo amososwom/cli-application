@@ -2,7 +2,7 @@ from lib.backend.connection import DbHandler
 # from  lib.logics  import *
 
 from utils import * 
-
+import uuid
         
 
 class UserActions(DbHandler):
@@ -38,9 +38,13 @@ class UserActions(DbHandler):
 
     # logout
     def confirm_logout(self):
-        self.uid = None
-        self.uname = None
-        info.print_info("Successfully logged out")
+        if self.uid:
+            self.uid = None
+            self.uname = None
+            info.print_info("Successfully logged out")
+        else: 
+            info.print_info("Your Not logged in")
+            
 
     # see available tokens
     def sys_tokens():
@@ -68,7 +72,11 @@ class UserActions(DbHandler):
             print("No tokens available")
 
     # sell token
-    def sell_tokens(self,token_qty,token_price):
+    def sell_tokens(self): #,token_qty,token_price):
+        if not self.loggedin():
+            return
+
+        randuid = uuid.uuid4().hex 
         print("sold tokens")
         pass
     def buy_tokens(self,token_qty,token_price):
@@ -85,13 +93,16 @@ class UserActions(DbHandler):
         else:
             return info.print_error("Opps you have to be logged in to ACCESS your details")
 
-
-    
-    def kill(self):
-        if not self.uid:
+    def loggedin(self):
+        if self.uid:
+            return True 
+        else: 
             info.print_error("You have to be logged in to Complete this Action")
+            return False
+    def kill(self):
+        if not self.loggedin():
             return
-        
+        print("doning")
         where = {
             "uid": self.uid
         }
@@ -99,8 +110,8 @@ class UserActions(DbHandler):
         response = DbHandler().delete_records('users',where)
         
         if response[0]['status']:
-            info.print_info(F"Account deleted successfully for at {self.uname} on {self.uid}")
             self.confirm_logout()
+            info.print_info(F"Account deleted successfully for at {self.uname} on {self.uid}")
         else:
             info.print_error(F"Error: {response.error}")
         pass  
