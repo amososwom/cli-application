@@ -105,24 +105,26 @@ class UserActions(DbHandler):
         print(token_qty)
 
         usersubdata = {
-            "b_uid": curtoken - token_qty
+            "b_token": curtoken - token_qty
         }
         useruid = {
             "b_uid": self.uid
         }
             
+        randuid = uuid.uuid4().hex
         marketdata = {
-            "m_id": token_qty,
+            "m_id": randuid[0:5],
             "m_uid": self.uid,
             "m_token": token_qty,
             "m_price": token_price,
             "m_type": 1
         }
         
-        
-        # randuid = uuid.uuid4().hex
-        # # randuid = f"{randuid:.4f}"
-        # print(randuid)
+        updatedata = self.oneconn.update_records('balances',usersubdata,useruid)
+
+        if updatedata[0]['status']:
+            self.oneconn.insert_records('markets',marketdata)
+            info.print_success(f"Successfully Sold {token_qty} tokens for {info.dollar(token_price,2)}")
 
     def buy_tokens(self,token_qty,token_price):
         print("bought tokens")
