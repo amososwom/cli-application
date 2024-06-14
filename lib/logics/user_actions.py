@@ -253,7 +253,7 @@ class UserActions(DbHandler):
                 continue
             approve = True
             break
-
+        info.print_info("Attepting Action..")
         if not approve:
             info.print_info("Exiting Trade..")
             return
