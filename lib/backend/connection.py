@@ -130,7 +130,7 @@ class DbHandler:
             return [{"status": False}, {"error": "A where Clause is needed"}]
 
         conctinatedvalue = ' AND '.join([f"{value} = ? " for value in where.keys()])
-        print(conctinatedvalue)
+        
         query = f"DELETE FROM {table} WHERE {conctinatedvalue}"
 
         values = tuple(where.values())

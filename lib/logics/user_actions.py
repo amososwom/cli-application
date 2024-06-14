@@ -101,9 +101,6 @@ class UserActions(DbHandler):
                 continue # this will skip the below code and the current illitaration 
             break
 
-        print(token_price)
-        print(token_qty)
-
         usersubdata = {
             "b_token": curtoken - token_qty
         }
@@ -123,6 +120,11 @@ class UserActions(DbHandler):
         updatedata = self.oneconn.update_records('balances',usersubdata,useruid)
 
         if updatedata[0]['status']:
+
+            info.print_info("**Your Current Balances**")
+            response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+            display.generate_table(response)
+
             self.oneconn.insert_records('markets',marketdata)
             info.print_success(f"Successfully Sold {token_qty} tokens for {info.dollar(token_price,2)}")
 
@@ -151,6 +153,7 @@ class UserActions(DbHandler):
             else:
                 for values in alldata:
                     if token_id == values['m_id']:
+                        tradeid = values['m_id']
                         owneruid = values['m_uid']
                         owner_token_qty = int(values['m_token'])
                         owner_token_price = int(values['m_price'])
@@ -168,9 +171,6 @@ class UserActions(DbHandler):
             info.print_info("Exiting Trade..")
             return
         if curbal > 0 and curbal >= owner_token_price:
-            print(owneruid)
-            print(owner_token_qty)
-            print(owner_token_price)
 
             usersubdata = {
                 "b_amount": curbal - owner_token_price,
@@ -191,18 +191,21 @@ class UserActions(DbHandler):
 
             if len(upline) > 0:
                 ownerdat = {
-                    "b_amount": curbal - owner_token_price,
-                    "b_token": curtoken + owner_token_qty
+                    "b_amount": curbal - owner_token_price
                 }
+
+                self.oneconn.update_records('balances', ownerdat, {"b_uid": owneruid})
+                self.oneconn.delete_records('markets',{'m_id': tradeid})
+
             info.print_success("Trade completed Succefully")
-            
+
             info.print_info("**Your Current Balances**")
             response = self.oneconn.select_records('balances',{"b_uid": self.uid})
             display.generate_table(response)
 
 
         else:
-            info.print_error("Insufficiemt Funds for this lease try selling your token to grab more coins") 
+            info.print_error("Insufficiemt Funds for this please try selling your token to grab more coins") 
         return
 
 
