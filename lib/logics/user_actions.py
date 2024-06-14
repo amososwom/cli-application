@@ -1,18 +1,16 @@
-from lib.backend.connection import DbHandler
-# from  lib.logics  import *
-
-from utils import * 
 import uuid
+from utils import * 
         
+from lib.backend.connection import DbHandler
 
 class UserActions(DbHandler):
     oneconn = DbHandler()
+    
     def __init__(self):
         super().__init__()
         self.uid = None
         self.uname = None
         self.oneconn = DbHandler()
-
 
     def confirm_login(self):
         name = input("> Enter Username >> ")
@@ -126,9 +124,16 @@ class UserActions(DbHandler):
             self.oneconn.insert_records('markets',marketdata)
             info.print_success(f"Successfully Sold {token_qty} tokens for {info.dollar(token_price,2)}")
 
-    def buy_tokens(self,token_qty,token_price):
-        print("bought tokens")
-        pass
+    def buy_tokens(self):
+        if not self.loggedin():
+            return
+        
+        info.print_info("**Your Current Balances**")
+        response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+        display.generate_table(response)
+        self.oneconn.see_market()
+
+
     def see_personal(self):
         if self.uid:
             info.print_info("**Your Details**")
