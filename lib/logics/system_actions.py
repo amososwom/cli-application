@@ -28,7 +28,8 @@ class SystemAction(DbHandler):
             "password":  password
         }
         balancesdata = {
-            "b_uid": randuid[0:8]
+            "b_uid": randuid[0:8],
+            "b_amount": 309
         }
 
         tokeinid = {'token_id': 7902}

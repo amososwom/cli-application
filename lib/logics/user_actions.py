@@ -1,11 +1,13 @@
 import uuid
 from utils import * 
-        
+
 from lib.backend.connection import DbHandler
+        
+from  lib.logics.system_actions import SystemAction
 
 class UserActions(DbHandler):
     oneconn = DbHandler()
-    
+
     def __init__(self):
         super().__init__()
         self.uid = None
@@ -131,7 +133,77 @@ class UserActions(DbHandler):
         info.print_info("**Your Current Balances**")
         response = self.oneconn.select_records('balances',{"b_uid": self.uid})
         display.generate_table(response)
-        self.oneconn.see_market()
+        SystemAction().see_market()
+
+        curbal = response[0]['b_amount']
+        curtoken = response[0]['b_token']
+
+        alldata = self.oneconn.select_records('markets')
+
+
+        while True:
+            token_id = input("> from the Market table['m_id'] type th ID you would like to purchase >>.. ").strip()
+
+            found = False
+
+            if token_id == 'exit':
+                break
+            else:
+                for values in alldata:
+                    if token_id == values['m_id']:
+                        owneruid = values['m_uid']
+                        owner_token_qty = int(values['m_token'])
+                        owner_token_price = int(values['m_price'])
+                        info.print_success(f"Trade id {token_id} selected Successfully..")
+                        info.print_info(f"Attempting Purchase..")
+                        
+                        found = True
+                        break
+                if found:
+                    break
+                else:
+                    info.print_error(f"you provided in correct market id please redo")
+
+        if not found:
+            info.print_info("Exiting Trade..")
+            return
+        if curbal > 0 and curbal >= owner_token_price:
+            print(owneruid)
+            print(owner_token_qty)
+            print(owner_token_price)
+
+            usersubdata = {
+                "b_amount": curbal - owner_token_price,
+                "b_token": curtoken + owner_token_qty
+            }
+            self.oneconn.update_records('balances', usersubdata, {"b_uid": self.uid})
+            randuid = uuid.uuid4().hex
+            usertransdata = {
+                "trans_id": randuid[0:9],
+                "trans_uid": self.uid,
+                "trans_type": 'Bought Token',
+                "trans_token": owner_token_price,
+                "trans_state": 2
+            }
+            self.oneconn.insert_records('transactions',usertransdata)
+
+            upline = self.oneconn.select_records('users',{'uid': owneruid})
+
+            if len(upline) > 0:
+                ownerdat = {
+                    "b_amount": curbal - owner_token_price,
+                    "b_token": curtoken + owner_token_qty
+                }
+            info.print_success("Trade completed Succefully")
+            
+            info.print_info("**Your Current Balances**")
+            response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+            display.generate_table(response)
+
+
+        else:
+            info.print_error("Insufficiemt Funds for this lease try selling your token to grab more coins") 
+        return
 
 
     def see_personal(self):
