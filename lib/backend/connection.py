@@ -50,9 +50,10 @@ class DbHandler:
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS markets (
                                 m_id TEXT PRIMARY KEY,
                                 m_uid TEXT,
-                                m_token TEXT,
-                                m_type TEXT,
-                                m_date TEXT,
+                                m_token INTEGER,
+                                m_price INTEGER,
+                                m_type INTEGER,
+                                m_date TEXT DEFAULT CURRENT_DATE,
                                 FOREIGN KEY (m_uid) REFERENCES users(uid) ON DELETE CASCADE
                             );''')
 

@@ -15,8 +15,8 @@ class UserActions(DbHandler):
 
 
     def confirm_login(self):
-        name = input("Enter Username >> ")
-        password = input("Enter Password >> ")
+        name = input("> Enter Username >> ")
+        password = input("> Enter Password >> ")
         data = {
             "uname": name,
             "password": password
@@ -80,7 +80,6 @@ class UserActions(DbHandler):
         response = self.oneconn.select_records('balances',{"b_uid": self.uid})
         display.generate_table(response)
 
-
         curbal = response[0]['b_amount']
         curtoken = response[0]['b_token']
 
@@ -91,8 +90,8 @@ class UserActions(DbHandler):
         
         while True:
             
-            token_qty = int(input("Enter Token-QTY you would like to release >>.. "))
-            token_price = int(input("Enter selling amount for all out token >>.. "))
+            token_qty = int(input("> Enter Token-QTY you would like to release >>.. "))
+            token_price = int(input("> Enter selling amount for all out token >>.. "))
 
             if token_qty > curtoken:
                 info.print_error(f"You have only {curtoken} token available you cant release more than {curtoken}")
@@ -101,12 +100,26 @@ class UserActions(DbHandler):
                 info.print_error(f"You have only {curtoken} token available")
                 continue # this will skip the below code and the current illitaration 
             break
+
         print(token_price)
         print(token_qty)
-            
-            
-        
 
+        usersubdata = {
+            "b_uid": curtoken - token_qty
+        }
+        useruid = {
+            "b_uid": self.uid
+        }
+            
+        marketdata = {
+            "m_id": token_qty,
+            "m_uid": self.uid,
+            "m_token": token_qty,
+            "m_price": token_price,
+            "m_type": 1
+        }
+        
+        
         # randuid = uuid.uuid4().hex
         # # randuid = f"{randuid:.4f}"
         # print(randuid)

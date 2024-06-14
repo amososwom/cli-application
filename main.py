@@ -29,7 +29,7 @@ def Main():
     useraction.user_menu(menudata)
 
     while True:
-        invalue = input("\n Execute a Command from the table['command'] or type menu>> ").lower().strip()
+        invalue = input("\n> Execute a Command from the table['command'] or type menu>> ").lower().strip()
         found = False
 
         if invalue == 'menu':

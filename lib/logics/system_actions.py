@@ -9,8 +9,8 @@ class SystemAction(DbHandler):
         self.oneconn = DbHandler()
     #  create user
     def create_user(self):
-        uname = input("Enter Username >> ")
-        password = input("Enter Password >> ")
+        uname = input("> Enter Username >> ")
+        password = input("> Enter Password >> ")
     
         if not uname or not password:
             info.print_error("fields cant be empty")
