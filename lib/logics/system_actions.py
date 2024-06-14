@@ -8,7 +8,10 @@ class SystemAction(DbHandler):
         super().__init__()
     
     #  create user
-    def create_user(uname,password):
+    def create_user():
+        uname = input("Enter Username >> ")
+        password = input("Enter Password >> ")
+    
         if not uname or not password:
             info.print_error("fields cant be empty")
             return
@@ -59,33 +62,20 @@ class SystemAction(DbHandler):
         else:
             print(F"Error: {response.error}")
 
-    #  delete users
-    def delete_user(uid):
-        if not uid:
-            info.print_error("fields cant be empty")
-            return
-        
-        where = {
-            "uid": uid
-        }
-        
-        response = DbHandler().delete_records('users',where)
-        
-        if response[0]['status']:
-            info.print_info(F"Account deleted successfully for {uid}")
-        else:
-            info.print_error(F"Error: {response.error}")
-    
     def see_users():
         users = DbHandler().select_records('users')
         if len(users) > 0:
-            print(f" \n All Token-Trader {len(users)} Users")
+            info.print_info(f" \n All Token-Trader Users-> {len(users)}")
             display.generate_table(users)
             pass
 
         else:
             info.print_success("Opps Seems you'll be our first User If you Create an Account")
 
-
+    def see_market():
+        print("market")
+        pass
+    def see_trans():
+        print("all trans")
 
 

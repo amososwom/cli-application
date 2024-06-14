@@ -1,91 +1,28 @@
 from lib.backend.connection import DbHandler
+# from  lib.logics  import *
+
 from utils import * 
 
-menudata = [
-        {
-            "arrow": ">**",
-            "command": "create",
-            "description": "Create Account",
-            "func": "Accepts Inputs"
-        },
-        {
-            "arrow": ">**",
-            "command": "login",
-            "description": "Login To Account",
-            "func": "Accepts Inputs"
-        },   
-        {
-            "arrow": ">**",
-            "command": "view_market",
-            "description": "View Market Analysis",
-            "func": "Accepts Inputs"
-        },   
-        {
-            "arrow": ">**",
-            "command": "view_all_users",
-            "description": "See full users",
-            "func": "systemaction.see_users"
-        },   
-        {
-            "arrow": ">**",
-            "command": "view_acc",
-            "description": "Your Account Details",
-            "func": "useraction().see_personal"
-        },   
-        {
-            "arrow": ">**",
-            "command": "buy_token",
-            "description": "Buy Tokens Form Market",
-            "func": "useraction().see_personal"
-        },   
-        {
-            "arrow": ">**",
-            "command": "sell_token",
-            "description": "Realse Tokens to Market",
-            "func": "useraction().see_personal"
-        },   
-        {
-            "arrow": ">**",
-            "command": "send_token",
-            "description": "Send your Tokens to A user",
-            "func": "useraction().see_personal"
-        },   
-        {
-            "arrow": ">**",
-            "command": "delete_acc",
-            "description": "Withdraw Funds",
-            "func": "Accepts Withdrawal Inputs"
-        },   
-        {
-            "arrow": ">**",
-            "command": "logout",
-            "description": "Logout From CLI-Application",
-            "func": "useraction().confirm_logout"
-        },  
-        {
-            "arrow": ">**",
-            "command": "exit",
-            "description": "Exit Application",
-            "func": "func"
-        }    
-    ]
         
 
 class UserActions(DbHandler):
+    oneconn = DbHandler()
     def __init__(self):
         super().__init__()
         self.uid = None
         self.uname = None
+        self.oneconn = DbHandler()
 
 
-    def confirm_login(self, name, password):
+    def confirm_login(self):
+        name = input("Enter Username >> ")
+        password = input("Enter Password >> ")
         data = {
             "uname": name,
             "password": password
         }
 
-        response = DbHandler().select_records('users',data)
-
+        response = self.oneconn.select_records('users',data)
         if len(response) > 0 :
 
             self.uid = response[0]['uid']
@@ -94,7 +31,7 @@ class UserActions(DbHandler):
         else:
             info.print_info("Opps your Credentials are Wrong")
     
-    def user_menu():
+    def user_menu(menudata):
         info.print_info(" \n**Navigate By Commands**")
 
         return display.generate_table(menudata)
@@ -107,7 +44,7 @@ class UserActions(DbHandler):
 
     # see available tokens
     def sys_tokens():
-        response = DbHandler().select_records('decentralized')
+        response = UserActions.oneconn.select_records('decentralized')
 
         return response if response else []
     
@@ -131,22 +68,42 @@ class UserActions(DbHandler):
             print("No tokens available")
 
     # sell token
-    def sell_token(self,token_qty,token_price):
+    def sell_tokens(self,token_qty,token_price):
+        print("sold tokens")
         pass
-
+    def buy_tokens(self,token_qty,token_price):
+        print("bought tokens")
+        pass
     def see_personal(self):
         if self.uid:
-            print("**Your Details**")
-            response = DbHandler().select_records('users',{"uid": self.uid})
+            info.print_info("**Your Details**")
+            response = self.oneconn.select_records('users',{"uid": self.uid})
             display.generate_table(response)
-            print("**Your Balances**")
-            response = DbHandler().select_records('balances',{"b_uid": self.uid})
+            info.print_info("**Your Balances**")
+            response = self.oneconn.select_records('balances',{"b_uid": self.uid})
             display.generate_table(response)
         else:
             return info.print_error("Opps you have to be logged in to ACCESS your details")
 
 
+    
+    def kill(self):
+        if not self.uid:
+            info.print_error("You have to be logged in to Complete this Action")
+            return
         
+        where = {
+            "uid": self.uid
+        }
+        
+        response = DbHandler().delete_records('users',where)
+        
+        if response[0]['status']:
+            info.print_info(F"Account deleted successfully for at {self.uname} on {self.uid}")
+            self.confirm_logout()
+        else:
+            info.print_error(F"Error: {response.error}")
+        pass  
     #buy tokens
 
     #see market token
