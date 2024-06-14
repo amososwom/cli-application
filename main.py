@@ -49,11 +49,9 @@ def Main():
                     elif hasattr(systemaction, func_name):
                         func = getattr(systemaction, func_name)
                         found = True    
-                    else:
-                        func = None
-                    func()
-            
-            if not found:
+            if found:
+                func()
+            else:
                 useraction.user_menu(menudata)
                 info.print_info(F"Command >> {invalue} not available in the table please retype")
 

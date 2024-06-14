@@ -72,10 +72,25 @@ class SystemAction(DbHandler):
         else:
             info.print_success("Opps Seems you'll be our first User If you Create an Account")
 
-    def see_market():
-        print("market")
-        pass
-    def see_trans():
-        print("all trans")
+    def see_market(self):
+        markets = self.oneconn.select_records('markets')
+        if len(markets) > 0:
+            info.print_info(f" \n All Market Traders -> {len(markets)}")
+            display.generate_table(markets)
+            pass
+
+        else:
+            info.print_success("Opps Seems you'll be our first User If you Create an Account")
+
+    def see_trans(self):
+        transactions = self.oneconn.select_records('transactions')
+        if len(transactions) > 0:
+            info.print_info(f" \n All Trading Transactions -> {len(transactions)}")
+            display.generate_table(transactions)
+            pass
+
+        else:
+            info.print_success("Opps Seems you'll be our first User If you Create an Account")
+
 
 
