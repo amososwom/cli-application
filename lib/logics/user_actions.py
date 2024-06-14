@@ -76,9 +76,41 @@ class UserActions(DbHandler):
         if not self.loggedin():
             return
 
-        randuid = uuid.uuid4().hex 
-        print("sold tokens")
-        pass
+        info.print_info("**Your Current Balances**")
+        response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+        display.generate_table(response)
+
+
+        curbal = response[0]['b_amount']
+        curtoken = response[0]['b_token']
+
+        if not curtoken > 0:
+
+            info.print_info(f"This Action Cant be accepeted due to low Token_Balance @ {curtoken}")
+            return
+        
+        while True:
+            
+            token_qty = int(input("Enter Token-QTY you would like to release >>.. "))
+            token_price = int(input("Enter selling amount for all out token >>.. "))
+
+            if token_qty > curtoken:
+                info.print_error(f"You have only {curtoken} token available you cant release more than {curtoken}")
+                continue # this will skip the below code and the current illitaration 
+            if token_qty < 0:
+                info.print_error(f"You have only {curtoken} token available")
+                continue # this will skip the below code and the current illitaration 
+            break
+        print(token_price)
+        print(token_qty)
+            
+            
+        
+
+        # randuid = uuid.uuid4().hex
+        # # randuid = f"{randuid:.4f}"
+        # print(randuid)
+
     def buy_tokens(self,token_qty,token_price):
         print("bought tokens")
         pass
