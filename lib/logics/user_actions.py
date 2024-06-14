@@ -49,6 +49,7 @@ class UserActions(DbHandler):
     # see available tokens
     def sys_tokens():
         response = UserActions.oneconn.select_records('decentralized')
+        UserActions.oneconn.close_connection()
 
         return response if response else []
     
@@ -187,13 +188,23 @@ class UserActions(DbHandler):
             }
             self.oneconn.insert_records('transactions',usertransdata)
 
-            upline = self.oneconn.select_records('users',{'uid': owneruid})
+            upline = self.oneconn.select_records('balances',{'b_uid': owneruid})
 
             if len(upline) > 0:
                 ownerdat = {
-                    "b_amount": curbal - owner_token_price
+                    "b_amount": upline[0]['b_amount'] + owner_token_price
                 }
 
+                randuid = uuid.uuid4().hex
+                owntransdata = {
+                    "trans_id": randuid[0:9],
+                    "trans_uid": owneruid,
+                    "trans_type": 'Received Funds',
+                    "trans_token": owner_token_price,
+                    "trans_state": 2
+                }
+
+                self.oneconn.insert_records('transactions',owntransdata)
                 self.oneconn.update_records('balances', ownerdat, {"b_uid": owneruid})
                 self.oneconn.delete_records('markets',{'m_id': tradeid})
 
@@ -203,11 +214,48 @@ class UserActions(DbHandler):
             response = self.oneconn.select_records('balances',{"b_uid": self.uid})
             display.generate_table(response)
 
-
         else:
             info.print_error("Insufficiemt Funds for this please try selling your token to grab more coins") 
         return
 
+    def send_tokens(self):
+        if not self.loggedin():
+            return
+        
+        info.print_info("**Your Current Balances**")
+        response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+        display.generate_table(response)
+
+        curbal = response[0]['b_amount']
+        curtoken = response[0]['b_token']
+        approve  = False
+
+        while True:
+
+            toname = input("> Please provide receivers Username/quit to quit>>.. ").strip()
+            totoken = int(input("How many tokens would you like send>>.."))
+
+            result = self.oneconn.select_records('users',{'uname': toname})
+
+            if toname == 'exit':
+                break
+            if not len(result) > 0 :
+                info.print_info(f"The Provided user name above dowsent Exist")
+                continue
+            if not curtoken >= totoken:
+
+                info.print_info(f"This Action Cant be accepeted due to low Token_Balance @ {curtoken}")
+                continue
+            if totoken <= 0:
+                info.print_info(f"Tokens must be greater than 0")
+                continue
+            approve = True
+            break
+
+        if not approve:
+            info.print_info("Exiting Trade..")
+            return
+        print("result")
 
     def see_personal(self):
         if self.uid:
@@ -230,11 +278,11 @@ class UserActions(DbHandler):
         if not self.loggedin():
             return
         print("doning")
-        where = {
-            "uid": self.uid
-        }
+        where = {"uid": self.uid}
         
-        response = DbHandler().delete_records('users',where)
+        self.delete_records('balances',{'b_uid': self.uid})
+        self.delete_records('markets',{'m_uid': self.uid})
+        response = self.delete_records('users',where)
         
         if response[0]['status']:
             self.confirm_logout()

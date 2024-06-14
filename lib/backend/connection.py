@@ -130,7 +130,7 @@ class DbHandler:
             return [{"status": False}, {"error": "A where Clause is needed"}]
 
         conctinatedvalue = ' AND '.join([f"{value} = ? " for value in where.keys()])
-        
+
         query = f"DELETE FROM {table} WHERE {conctinatedvalue}"
 
         values = tuple(where.values())
@@ -150,3 +150,5 @@ class DbHandler:
         self._conn.close()
         info.print_info("Connection Closed Successfully")
         
+#  gg - bal = 249
+#  gg - token = 249
