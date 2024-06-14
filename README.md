@@ -5,9 +5,9 @@
 #### By *Amos Omwando Oswo*
 
 ## Description
- * this is a project meeking infalation as it has one token that anyone gets a share when craetes an accont, and the more the share the more the token price increses 
+ * This is a project seeking inflation as it has one token that anyone gets a share when creates an accont, and the more the share the more the token price increases 
 ## How to Use
- * Hello for you to use/access youll pass some couple of requirments below, then continue with this instruction here:
+ * Hello for you to use/access you pass some couple of requirements below, then continue with this instruction here:
 ### Requirements
 
 * A computer with a bash terminal and Python3 installed.
@@ -27,7 +27,7 @@
 
 3. Navigate to the project folder on your bash terminal.
 
-4. Install dependancies using
+4. Install dependencies using
 
     ```bash
       pipenv install
@@ -50,7 +50,7 @@ a table menu will be displayed and you may navigate using the commands
 
 ## Support and Contact Details
 
-Incase of any query, need for collaboration or issues with this code, feel free to reach me at
+In case of any query, need for collaboration, or issues with this code, feel free to reach me at
 <amososwom162@gmail.com>
 
 ### License
