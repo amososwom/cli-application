@@ -208,7 +208,7 @@ class UserActions(DbHandler):
                 self.oneconn.update_records('balances', ownerdata, {"b_uid": owneruid})
                 self.oneconn.delete_records('markets',{'m_id': tradeid})
 
-            info.print_success("Trade completed Successfully")
+            info.print_success(f"Trade completed Successfully from {token_id}")
 
             info.print_info("**Your Current Balances**")
             response = self.oneconn.select_records('balances',{"b_uid": self.uid})
@@ -288,9 +288,10 @@ class UserActions(DbHandler):
         self.oneconn.insert_records('transactions',owntransdata)
         self.oneconn.update_records('balances', receiverdata, {"b_uid": result[0]['b_uid']})
 
+        shi = self.oneconn.select_records('decentralized')
+        worth = totoken * shi[0]['token_price']
 
-
-        info.print_success("Token transferred Successfully")
+        info.print_success(f"Token transferred Successfully to {toname} Worth $ {worth:.2f}")
 
         info.print_info("**Your Current Balances**")
         response = self.oneconn.select_records('balances',{"b_uid": self.uid})
@@ -316,7 +317,6 @@ class UserActions(DbHandler):
     def kill(self):
         if not self.loggedin():
             return
-        print("doning")
         where = {"uid": self.uid}
         
         self.delete_records('balances',{'b_uid': self.uid})
