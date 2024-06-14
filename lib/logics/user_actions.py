@@ -191,7 +191,7 @@ class UserActions(DbHandler):
             upline = self.oneconn.select_records('balances',{'b_uid': owneruid})
 
             if len(upline) > 0:
-                ownerdat = {
+                ownerdata = {
                     "b_amount": upline[0]['b_amount'] + owner_token_price
                 }
 
@@ -205,10 +205,10 @@ class UserActions(DbHandler):
                 }
 
                 self.oneconn.insert_records('transactions',owntransdata)
-                self.oneconn.update_records('balances', ownerdat, {"b_uid": owneruid})
+                self.oneconn.update_records('balances', ownerdata, {"b_uid": owneruid})
                 self.oneconn.delete_records('markets',{'m_id': tradeid})
 
-            info.print_success("Trade completed Succefully")
+            info.print_success("Trade completed Successfully")
 
             info.print_info("**Your Current Balances**")
             response = self.oneconn.select_records('balances',{"b_uid": self.uid})
@@ -226,19 +226,21 @@ class UserActions(DbHandler):
         response = self.oneconn.select_records('balances',{"b_uid": self.uid})
         display.generate_table(response)
 
-        curbal = response[0]['b_amount']
         curtoken = response[0]['b_token']
         approve  = False
 
         while True:
 
-            toname = input("> Please provide receivers Username/quit to quit>>.. ").strip()
-            totoken = int(input("How many tokens would you like send>>.."))
+            toname = input("> Please provide receivers Username/quit to quit>>.. ").strip().lower()
 
-            result = self.oneconn.select_records('users',{'uname': toname})
-
-            if toname == 'exit':
+            if toname == 'quit':
                 break
+
+            totoken = int(input("How many tokens would you like send>>..").strip())
+
+            resultuser = self.oneconn.select_records('users',{'uname': toname})
+            result = self.oneconn.select_records('balances',{'b_uid': resultuser[0]['uid']})
+
             if not len(result) > 0 :
                 info.print_info(f"The Provided user name above dowsent Exist")
                 continue
@@ -255,7 +257,44 @@ class UserActions(DbHandler):
         if not approve:
             info.print_info("Exiting Trade..")
             return
-        print("result")
+        
+        usersubdata = {
+                "b_token": curtoken - totoken
+            }
+        self.oneconn.update_records('balances', usersubdata, {"b_uid": self.uid})
+        randuid = uuid.uuid4().hex
+        usertransdata = {
+                "trans_id": randuid[0:9],
+                "trans_uid": self.uid,
+                "trans_type": f"Sent Token{totoken}",
+                "trans_token": totoken,
+                "trans_state": 2
+            }
+        self.oneconn.insert_records('transactions',usertransdata)
+
+        receiverdata = {
+            "b_token": result[0]['b_token'] + totoken
+        }
+
+        randuid = uuid.uuid4().hex
+        owntransdata = {
+            "trans_id": randuid[0:9],
+            "trans_uid": result[0]['b_uid'],
+            "trans_type": f"Received Token {totoken}",
+            "trans_token": totoken,
+            "trans_state": 2
+        }
+
+        self.oneconn.insert_records('transactions',owntransdata)
+        self.oneconn.update_records('balances', receiverdata, {"b_uid": result[0]['b_uid']})
+
+
+
+        info.print_success("Token transferred Successfully")
+
+        info.print_info("**Your Current Balances**")
+        response = self.oneconn.select_records('balances',{"b_uid": self.uid})
+        display.generate_table(response)
 
     def see_personal(self):
         if self.uid:
