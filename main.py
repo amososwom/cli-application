@@ -3,7 +3,7 @@ from utils import *
 
 
 
-systemaction  = system_actions.SystemAction
+systemaction  = system_actions.SystemAction()
 useraction  = user_actions.UserActions
 users = useraction()
 
@@ -36,7 +36,7 @@ def Main():
         if invalue == 'menu':
             useraction.user_menu(menudata)
         elif invalue == 'exit':
-                info.print_error("Exiting the application...")
+                info.print_error("Exiting the cli-app...")
                 break
         else:
             for menu_item in menudata:

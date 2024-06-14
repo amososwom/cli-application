@@ -6,16 +6,16 @@ from utils import *
 class SystemAction(DbHandler):
     def __init__(self):
         super().__init__()
-    
+        self.oneconn = DbHandler()
     #  create user
-    def create_user():
+    def create_user(self):
         uname = input("Enter Username >> ")
         password = input("Enter Password >> ")
     
         if not uname or not password:
             info.print_error("fields cant be empty")
             return
-        confirmusers = DbHandler().select_records('users',{"uname": uname})
+        confirmusers = self.oneconn.select_records('users',{"uname": uname})
         if len(confirmusers) > 0:
             info.print_error(f" Hi {uname} Sorry we could not create account since this username exist")
             return
@@ -33,10 +33,10 @@ class SystemAction(DbHandler):
 
         tokeinid = {'token_id': 7902}
 
-        DbHandler().insert_records('users',data)
-        response = DbHandler().insert_records('balances',balancesdata)
+        self.oneconn.insert_records('users',data)
+        response = self.oneconn.insert_records('balances',balancesdata)
 
-        inf = DbHandler().select_records('decentralized',tokeinid)
+        inf = self.oneconn.select_records('decentralized',tokeinid)
 
 
         current = inf[0]['token_qty']
@@ -45,14 +45,14 @@ class SystemAction(DbHandler):
             giveaway = current * 0.01
             recivable = inf[0]['token_price'] * 0.05 + inf[0]['token_price']
 
-            DbHandler().update_records('balances',{'b_token': giveaway},balancesdata)
+            self.oneconn.update_records('balances',{'b_token': giveaway},balancesdata)
 
             tokensub =  {
                 'token_qty': current-giveaway,
                 'token_price': recivable
             }
 
-            DbHandler().update_records('decentralized',tokensub,tokeinid)
+            self.oneconn.update_records('decentralized',tokensub,tokeinid)
             info.print_info(f"Hi {uname} you've Received Extra {giveaway:.4f}token worth ${recivable:.2f}")
         else:
             info.print_error(f"Sorry {uname} No token available for now")
@@ -62,8 +62,8 @@ class SystemAction(DbHandler):
         else:
             print(F"Error: {response.error}")
 
-    def see_users():
-        users = DbHandler().select_records('users')
+    def see_users(self):
+        users = self.oneconn.select_records('users')
         if len(users) > 0:
             info.print_info(f" \n All Token-Trader Users-> {len(users)}")
             display.generate_table(users)

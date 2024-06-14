@@ -104,26 +104,3 @@ class UserActions(DbHandler):
         else:
             info.print_error(F"Error: {response.error}")
         pass  
-    #buy tokens
-
-    #see market token
-
-    # see balances
-
-    #see his transactions
-
-
-    # send token
-
-
-
-
-
-
-    # cancel trade
-
-
-    #view personal history
-
-
-    #delete account
